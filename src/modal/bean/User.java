@@ -12,7 +12,7 @@ public class User {
 	private BigDecimal tele;
 	private String email;
 	private String amail;
-	private String ddmail;  //hh 
+	private String ddmail;  //这个是测试的字段
 	
 	
 	public User() {
