@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- mapper接口类的全名 -->
+<mapper namespace="controller.mapper.DocMapper">
+
+	<insert id="addDoc" parameterType="modal.bean.Doc"  >
+		<selectKey keyProperty="doc_id" order="BEFORE" resultType="int">
+			select doc_seq.nextval from dual
+		</selectKey> 
+		insert into doc values(#{doc_id},#{down_count},#{uploader},
+		#{upload_time},#{down_integral},#{doc_type},#{doc_title},#{state},#{doc_name})
+	</insert>
+	<!-- 管理员审核文档 -->
+	<update id="updateDocState" parameterType="int">
+		update doc set state ='已审核' where doc_id=#{id}
+	</update>
+	
+	<select id="findAllDoc" resultType="modal.bean.Doc">
+		select * from doc where 1=1 
+	</select>
+	<select id="findDocByCondition" parameterType="modal.bean.SearchBean" resultType="modal.bean.Doc">
+		select * from doc where state='已审核'
+		<if test="condition !='' ">
+			and doc_title like '%${condition}%'
+			or uploader like '%${condition}%'
+			or doc_type like '%${condition}%'
+			or doc_name like '%${condition}%'
+		</if> 
+		<!-- <if test="_parameter != '' ">
+			 and doc_title = #{condition} 
+			or uploader = #{condition} 
+			or doc_type = #{condition}  
+			and doc_title like '%${docCondition}%'
+			or uploader like '%${docCondition}%'
+			or doc_type like '%${docCondition}%' 
+		</if> -->
+		<!-- select * from doc where doc_type like  '%'#{0}'%'
+		or uploader like #{condition} 
+		or doc_type like #{condition}  -->
+	</select>
+	<select id="findDoc"  parameterType="modal.bean.SearchBean" resultType="modal.bean.Doc">
+		select * from doc where uploader=#{uploader}
+		
+		<if test="docType != '' ">
+			and doc_type = #{docType}
+		</if> 
+		<if test="docState != '' ">
+			and state = #{docState}
+		</if>
+		<if test="startTime != '' ">
+			and upload_time between #{startTime}
+		</if>
+		<choose>
+			<when test="startTime == '' ">
+				and 1=1
+			</when>
+			<when test="endTime == '' ">
+				and "2048-01-01"
+			</when>
+			<when test="endTime != '' ">
+				and #{endTime}
+			</when>
+		</choose>  
+	</select>
+	
+	<!-- 管理员查看待审核的文档 -->
+	<select id="findDocForCheck"  parameterType="modal.bean.SearchBean" resultType="modal.bean.Doc">
+		select * from doc where state='未审核'
+		<if test="docTitle != '' ">
+			and doc_title = #{docTitle}
+		</if> 
+		<if test="uploader != '' ">
+			and uploader = #{uploader}
+		</if> 
+		<if test="docType != '' ">
+			and doc_type = #{docType}
+		</if> 
+		<if test="startTime != '' ">
+			and upload_time between #{startTime}
+		</if>
+		<choose>
+			<when test="startTime == '' ">
+				and 1=1
+			</when>
+			<when test="endTime == '' ">
+				and "2048-01-01"
+			</when>
+			<when test="endTime != '' ">
+				and #{endTime}
+			</when>
+		</choose>  
+	</select>
+
+<!-- 记录 用户对文档的操作 :涉及表 user_doc  -->
+	<!-- 增加用户文档 -->
+	<insert id="addUserDoc" parameterType="modal.bean.User_Doc"  >
+		<selectKey keyProperty="user_doc_id" order="BEFORE" resultType="int">
+			select user_doc_seq.nextval from dual
+		</selectKey> 
+		insert into user_doc values(#{user_doc_id},#{user_name},#{doc_id},#{state})
+	</insert>
+
+
+</mapper>
+	

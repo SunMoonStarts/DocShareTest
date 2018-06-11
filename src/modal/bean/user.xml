@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" 
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<!-- mapper接口类的全名 -->
+<mapper namespace="controller.mapper.UserMapper">
+
+	<insert id="addUser" parameterType="modal.bean.User" >
+		<selectKey keyProperty="user_id" order="BEFORE" resultType="int">
+			select user_seq.nextval from dual
+		</selectKey>
+		insert into
+		tb_user values(#{user_id},#{user_name},#{user_pwd},
+			#{sex},#{education},#{profession},#{tele},#{email},#{param_id},#{register_time})
+	</insert>
+	<!-- 更新用户积分 -->
+	<update id="updateUserIntegral">
+		update tb_user set integral =#{0} where user_name=#{1}
+	</update>
+	<!-- 登录，找积分 -->
+	<select id="findUser" resultMap="userInfo" parameterType="modal.bean.User">
+		select a.*,b.total_integral from tb_user a inner join integral b on 
+		a.user_name=b.user_name where a.user_name=#{user_name}  and a.user_pwd=#{user_pwd}
+	</select>
+	<resultMap type="modal.bean.User" id="userInfo">
+		<id property="user_id" column="USER_ID"/>
+		<result property="user_name" column="USER_NAME"/>
+		<result property="user_pwd" column="USER_PWD"/>
+		<result property="sex" column="SEX"/>
+		<result property="education" column="EDUCATION"/>
+		<result property="profession" column="PROFESSION"/>
+		<result property="tele" column="TELE"/>
+		<result property="email" column="EMAIL"/>
+		<result property="param_id" column="PARAM_ID"/>
+		<result property="register_time" column="REGISTER_TIME"/>
+		<association property="integral" column="USER_NAME" javaType="modal.bean.Integral">
+			<!-- <id property="integral_id" column="INTEGRAL_ID" />
+			<result property="user_name" column="USER_NAME" />    -->
+			<result property="total_integral" column="TOTAL_INTEGRAL"/>
+		</association>
+		
+	</resultMap>
+	
+	
+	<select id="findUserByName" resultType="modal.bean.User" parameterType="modal.bean.User">
+		select * from tb_user where user_name=#{user_name}
+	</select>
+	<select id="findUserByCondition" resultType="modal.bean.User" parameterType="modal.bean.SearchBean">
+		select * from tb_user where param_id=1
+		<if test="uploader != '' ">
+			and uploader=#{uploader}
+		</if>
+		<if test="startTime != '' ">
+			and upload_time between #{startTime}
+		</if>
+		<choose>
+			<when test="startTime == '' ">
+				and 1=1
+			</when>
+			<when test="endTime == '' ">
+				and "2048-01-01"
+			</when>
+			<when test="endTime != '' ">
+				and #{endTime}
+			</when>
+		</choose> 
+	</select>
+	
+	
+	<!-- 
+
+	<select id="findById2" parameterType="int" resultType="java.util.HashMap">
+		select
+		deptno,dname,loc from dept where deptno=#{id}
+    </select>
+
+	<select id="findAll2" resultType="java.util.HashMap">
+		select deptno,dname,loc from
+		dept
+	</select> -->
+
+
+
+
+</mapper>
+	

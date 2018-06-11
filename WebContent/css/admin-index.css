@@ -1,0 +1,111 @@
+﻿	*{
+		padding:0;
+		margin:0;
+		list-style:none;
+		text-decoration:none;
+	}
+	html,body{
+		height:100%;
+	}
+	.page{
+		width:100%;
+		height:100%;
+	}
+	
+	.header,.footer{
+		height:5%;
+	}
+	.header{
+		background:url("../images/top_bg.jpg") 0px 70px;
+	}
+	.footer{
+		background:url("../images/top_bg.jpg") 0px 199px;
+	}
+	.content{
+		height:90%;
+	}
+	
+	.con-left{
+		width:15%;
+		height:100%;
+		
+		float:left;
+		box-sizing:border-box;
+	}
+	
+	.con-right{
+		width:85%;
+		height:100%;
+		float:right;
+		border:1px solid black;
+		box-sizing:border-box;
+	}
+	
+	/* 中间界面的左边部分  */
+	.a-bg{
+		background-color:orange;  /*  a标签被点击后的背景颜色、字体颜色 */
+		color:blue;
+	}
+	.con-left  a{
+		display:block;
+		width:100%;
+		height:30px;
+		black;
+		text-decoration:none;
+		padding:6px;
+		box-sizing:border-box;
+	}
+	.con-left a:hover{
+		color:blue;
+		background-color:orange;
+	}
+	/* .con-left>ul>li>a:linked{
+		color:red;
+	} */
+	.con-left a:active{
+		color:green;
+	}
+	.content .con-left .con-left-menu{
+		padding:10px;
+		box-sizing:border-box;
+	}
+	.content .con-left .con-left-menu li{
+		font-size:18px;
+		color:white;
+	}
+	.con-left-menu .select{
+		background-color:orange;
+	
+	}
+	/* 中间界面的右边部分  */
+	.con-right .con-right-title{
+		width:100%;
+		height:7%;
+		background-color:#d7d5e2;
+		border:1px solid #a52f2f;
+		box-sizing:border-box;
+	}
+	.con-right .con-right-page{
+		width:100%;
+		height:93%;
+	
+	}
+	.con-right .con-right-page iframe{
+		width:100%;
+		height:100%;
+		box-sizing:border-box;
+	}
+	/*面包屑导航区*/
+	.con-right-title .navi{
+		width:300px;
+	
+		padding-top:6px;
+		padding-left:12px;
+		background-color:#d7d5e2;
+	}
+	.hideNode{
+		display:none;
+	}
+	.showNode{
+		display:block;
+	}

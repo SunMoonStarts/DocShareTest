@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+<struts>
+	
+	<!--	设置默认编码-->
+	<constant name="struts.i18n.encoding" value="utf-8"></constant>
+	<!--	设置默认上传文件时临时文件存放文件夹-->
+	<constant name="struts.multipart.saveDir" value="F:\train\培训\最后第四阶段"></constant>
+	
+	<package name="user" extends="struts-default" namespace="/">
+		<!-- 拦截器 -->
+		<interceptors>
+			<interceptor name="encodeInterceptor"
+				class="controller.EncodeInterceptor"></interceptor>
+			<!-- 拦截栈 -->
+			<interceptor-stack name="myStack">
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+				<interceptor-ref name="encodeInterceptor"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<action name="userAction" class="controller.UserAction">
+			<interceptor-ref name="myStack"></interceptor-ref>
+			<result name="login-member-success">jsp/index.jsp</result>
+			<result name="login-member-fail">jsp/login.jsp</result>
+			<result name="code-error">jsp/login.jsp</result>
+			
+			<result name="register-success">jsp/login.jsp</result>
+			<result name="register-same-error">jsp/register.jsp</result>
+			<result name="register-insert-error">jsp/register.jsp</result>
+			
+			<result name="login-admin-success">jsp/admin-index.jsp</result>
+			<result name="login-admin-fail">jsp/admin-login.jsp</result>
+		</action>
+		
+		<action name="docAction" class="controller.DocAction">
+			<interceptor-ref name="myStack"></interceptor-ref>
+			<result name="search-my-doc">jsp/my-doc.jsp</result>
+			<result name="search-all-doc">jsp/search-all-doc.jsp</result>
+			<result name="success">
+				jsp/user-mana.jsp
+			</result>
+		</action>
+		<!-- 查询 -->
+		<action name="searchAction" class="controller.SearchAction">
+			<interceptor-ref name="myStack"></interceptor-ref>
+			<result name="user-search">jsp/doc-user-mana.jsp</result>
+			
+			<result name="doc-check-search">jsp/doc-user-mana.jsp</result>
+		</action>
+		
+		<action name="createImage" class="controller.CreateImageAction"
+			method="execute">
+			<!-- 使用Stream类型 -->
+			<result name="success" type="stream">
+				<!-- 指定输出的值==流 -->
+				<param name="inputName">imageStream</param>
+			</result>
+			<result name="error">jsp/login.jsp</result>
+		</action>
+		<!-- 文件上传 -->
+		<action name="upload" class="controller.UploadAction" >
+			<result name="result" >jsp/up-load-doc.jsp</result>
+			<result name="input">jsp/my-doc.jsp</result>
+			
+			<!-- 重定义fileUpload拦截器,fileUpload是固定的	 -->
+			<interceptor-ref name="fileUpload">
+				<!-- maximumSize:固定参数，409600：以字节为单位，409600表示400k，指每一个文件的最大值，而不是指所有文件的总大小 -->
+				<param name="maximumSize">409600</param>
+				<!-- allowedTypes:固定参数  application/vnd.ms-powerpointt：ppt文件类型，从tomcat的安装目录下的conf\web里定义了所有的文件类型 -->
+				<param name="allowedTypes">application/vnd.ms-powerpoint</param>
+			</interceptor-ref>
+			<!-- 一个action中有配置拦截器，就必须手动加载默认拦截器	 -->	
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+		<!--	文件下载	-->
+		<action name="download" class="controller.DownloadAction">
+			<result name="success" type="stream">
+				<param name="contentType">application/vnd.ms-powerpoint</param>
+				<!-- 下载后生成的文件名 -->
+				<param name="contentDisposition">attachment;filename=${fname}</param>
+				<!-- 定义了调用action中的哪个方法，方法名为：getDownloadFile(),所以这儿用downloadFile（去掉get，将D改为d） -->	
+				<param name="inputName">downloadFile</param>
+			</result>
+			<result name="input">jsp/my-doc.jsp</result>
+		</action>
+	</package>
+	<!-- 统一跳转到新页面 -->
+	<package name="doc" extends="struts-default" namespace="/skip">
+		<!-- 文档跳转 -->
+		<action name="skipAllDocAction"
+			class="controller.SkipCommonAction">
+			<result name="search-all-doc">/jsp/search-all-doc.jsp</result>
+			<result name="my-doc">/jsp/my-doc.jsp</result>
+			<result name="up-load-doc">/jsp/up-load-doc.jsp</result>
+			<result name="down-load-doc">/jsp/search-all-doc.jsp</result>
+			<result name="doc-check">/jsp/doc-user-mana.jsp</result>
+		</action>
+		<!-- 用户相关跳转 -->
+		<action name="skipUser" class="controller.SkipCommonAction">
+			<result name="user-register">/jsp/register.jsp</result>
+			<result name="user-exit">/jsp/login.jsp</result>
+			
+		</action>
+		<!-- 后台界面跳转 -->
+		<action name="skipAdminAction" class="controller.SkipCommonAction">
+			<result name="user-admin-add">/jsp/user-add.jsp</result>
+			<result name="user-admin-select">/jsp/user-select.jsp</result>
+			<result name="user-admin-mana">/jsp/doc-user-mana.jsp</result>
+			<result name="doc-admin-check">/jsp/doc-user-mana.jsp</result>
+		</action>
+	</package>
+<!-- 	<package name="json" extends="json-default" namespace="/json">
+		拦截器
+		<interceptors>
+			<interceptor name="encodeInterceptor"
+				class="controller.EncodeInterceptor"></interceptor>
+			拦截栈
+			<interceptor-stack name="myStack">
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+				<interceptor-ref name="encodeInterceptor"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors> 
+		<action name="manaAction" class="controller.DocAction">
+			<interceptor-ref name="myStack"></interceptor-ref> 
+			<result name="success" type="json">
+				<param name="root">flag</param>
+			</result> 
+			<result name="success">jsp/doc-user-mana.jsp</result>
+		</action>
+	
+	</package> -->
+	
+	
+</struts>
