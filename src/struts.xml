@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+<struts>
+	<!-- <constant name="struts.devMode" value="true" -->
+	<package name="user" extends="struts-default" namespace="/">
+		<!-- 拦截器 -->
+		<interceptors>
+			<interceptor name="encodeInterceptor"
+				class="controller.EncodeInterceptor"></interceptor>
+			<!-- 拦截栈 -->
+			<interceptor-stack name="myStack">
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+				<interceptor-ref name="encodeInterceptor"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+
+		<action name="login" class="controller.LoginAction">
+			<interceptor-ref name="myStack"></interceptor-ref>
+			<result name="success">jsp/index.jsp</result>
+			<result name="input">jsp/login.jsp</result>
+			<result name="test">jsp/test.jsp</result>
+			<result name="admin-login">jsp/admin-index.jsp</result>
+			<result name="error">jsp/error.jsp</result>
+			<result name="admin-error">jsp/admin-login.jsp</result>
+		</action>
+		<action name="register" class="controller.RegisterAction"
+			method="execute">
+			<result name="success">jsp/login.jsp</result>
+			<result name="error">jsp/register.jsp</result>
+			<result name="skip">jsp/register.jsp</result>
+		</action>
+		<action name="createImage" class="controller.CreateImageAction"
+			method="execute">
+			<!-- 使用Stream类型 -->
+			<result name="success" type="stream">
+				<!-- 指定输出的值==流 -->
+				<param name="inputName">imageStream</param>
+			</result>
+			<result name="error">jsp/login.jsp</result>
+		</action>
+		<action name="userAction" class="controller.UserAction"
+			method="getUsers">
+			<result name="user-list">jsp/user-info.jsp</result>
+			<result name="skip-doc">jsp/my-doc.jsp</result>
+		</action>
+		<action name="testAction" class="controller.TestAction"
+			method="execute">
+
+			<result name="test">jsp/test.jsp</result>
+		</action>
+	</package>
+	<!-- 统一跳转到新页面 -->
+	<package name="doc" extends="struts-default" namespace="/skip">
+		<!-- 文档跳转 -->
+		<action name="skipAllDocAction"
+			class="controller.SkipCommonAction">
+			<result name="search-all-doc">/jsp/search-all-doc.jsp</result>
+			<result name="my-doc">/jsp/my-doc.jsp</result>
+			<result name="up-load-doc">/jsp/up-load-doc.jsp</result>
+		</action>
+		<!-- 后台界面跳转 -->
+		<action name="skipAdminAction"
+			class="controller.SkipCommonAction">
+
+			<result name="user-admin-add">/jsp/user-add.jsp</result>
+
+		</action>
+		
+	</package>
+	<!-- 文件的上传/下载 -->
+	<package name="default"  extends="struts-default" namespace="/">
+		<action name="upload" class="controller.UploadAction">
+			<result name="input">up-load-doc.jsp</result>
+			<interceptor-ref name="defaultStack">
+				<param name="maximumSize">2097152</param>
+				<param name="fileUpload.allowedExtensions">txt,mp3,doc</param>
+			</interceptor-ref>
+		</action>
+
+	</package>
+
+
+</struts>
