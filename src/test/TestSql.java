@@ -55,7 +55,7 @@ public class TestSql {
 		
 		Integral it=(Integral) conf.getBean("integral");
 		System.out.println(it);
-		
+		System.out.println("提交测试");
 		AbstractApplicationContext ab=(AbstractApplicationContext) conf;
 		ab.close();
 	}
