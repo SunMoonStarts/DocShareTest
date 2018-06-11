@@ -11,6 +11,10 @@ public class User {
 	private String profession;
 	private BigDecimal tele;
 	private String email;
+	private String amail;
+	
+	
+	
 	public User() {
 		
 	}
