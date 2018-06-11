@@ -57,6 +57,7 @@ public class TestSql {
 		System.out.println(it);
 		System.out.println("提交测试");
 		System.out.println("提交测试2");
+		System.out.println("提交测试3");
 		AbstractApplicationContext ab=(AbstractApplicationContext) conf;
 		ab.close();
 	}
